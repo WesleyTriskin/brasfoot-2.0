@@ -1,0 +1,23 @@
+# Logs
+*.log
+mod_debug.log
+erros.log
+
+# Build & Classes temporárias
+*.class
+build_classes/
+sources.txt
+*.tmp
+*.bak
+
+# Pacotes de distribuição binários (armazenados como Releases no GitHub ou no Desktop)
+*.zip
+
+# IDE e Sistema Operacional
+.idea/
+.vscode/
+*.suo
+*.user
+Thumbs.db
+Desktop.ini
+.DS_Store
