@@ -10,18 +10,20 @@ echo " ⚽ Brasfoot 2026 Cloud Server (TigerVNC + Auto-Fullscreen)"
 echo " Display: $DISPLAY | Porta Web: $PORT"
 echo "============================================================"
 
-rm -f /tmp/.X99-lock /tmp/.X11-unix/X99
+rm -f /tmp/.X99-lock /tmp/.X11-unix/X99 /tmp/vnc.sock
 
-# 1. Iniciar Xtigervnc (Servidor X11 + VNC nativo de alta performance, sem travamento de handshake)
+# 1. Iniciar Xtigervnc via Unix Socket (/tmp/vnc.sock) + porta interna 59099 com Blacklist desativada
 Xtigervnc "$DISPLAY" \
   -geometry 1024x720 \
   -depth 24 \
-  -rfbport 5900 \
-  -localhost \
+  -rfbunixpath /tmp/vnc.sock \
+  -rfbport -1 \
   -SecurityTypes None \
   -AlwaysShared \
   -AcceptKeyEvents \
   -AcceptPointerEvents \
+  -BlacklistThreshold 1000000 \
+  -BlacklistTimeout 0 \
   -ac >/tmp/vnc.log 2>&1 &
 sleep 1.5
 

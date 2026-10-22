@@ -392,7 +392,10 @@ async def handle_websockify(request: web.Request):
     await ws.prepare(request)
 
     try:
-        reader, writer = await asyncio.open_connection(VNC_HOST, VNC_PORT)
+        if Path("/tmp/vnc.sock").exists():
+            reader, writer = await asyncio.open_unix_connection("/tmp/vnc.sock")
+        else:
+            reader, writer = await asyncio.open_connection(VNC_HOST, VNC_PORT)
     except Exception as e:
         await ws.close(code=1011, message=str(e).encode())
         return ws
