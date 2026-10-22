@@ -362,9 +362,33 @@ async def handle_upload_save(request: web.Request):
     return web.json_response({"success": True, "filename": filename})
 
 
+async def handle_diag(request: web.Request):
+    def read_tail(p: str, n: int = 40) -> str:
+        path = Path(p)
+        if not path.exists():
+            return ""
+        lines = path.read_text(encoding="utf-8", errors="ignore").splitlines()
+        return "\n".join(lines[-n:])
+
+    env = os.environ.copy()
+    env["DISPLAY"] = os.environ.get("DISPLAY", ":99")
+    wins = subprocess.run(["xdotool", "search", "--onlyvisible", "--name", "."], env=env, capture_output=True, text=True)
+    win_list = []
+    for wid in wins.stdout.splitlines():
+        wname = subprocess.run(["xdotool", "getwindowname", wid], env=env, capture_output=True, text=True).stdout.strip()
+        wgeom = subprocess.run(["xdotool", "getwindowgeometry", "--shell", wid], env=env, capture_output=True, text=True).stdout.strip()
+        win_list.append({"id": wid, "name": wname, "geometry": wgeom})
+
+    return web.json_response({
+        "windows": win_list,
+        "brasfootLog": read_tail("/tmp/brasfoot.log"),
+        "vncLog": read_tail("/tmp/x11vnc.log"),
+    })
+
+
 async def handle_websockify(request: web.Request):
     """Proxy WebSocket de baixa latência para a porta TCP do x11vnc (127.0.0.1:5900)"""
-    ws = web.WebSocketResponse(protocols=("binary", "base64"))
+    ws = web.WebSocketResponse(protocols=("binary",))
     await ws.prepare(request)
 
     try:
@@ -402,6 +426,10 @@ async def handle_websockify(request: web.Request):
         except Exception:
             pass
         finally:
+            try:
+                writer.close()
+            except Exception:
+                pass
             if not ws.closed:
                 await ws.close()
 
@@ -410,8 +438,8 @@ async def handle_websockify(request: web.Request):
 
 
 async def handle_root(request: web.Request):
-    """Redireciona / para o cliente noVNC embutido com autoconnect e resize=scale"""
-    raise web.HTTPFound("/vnc_lite.html?autoconnect=true&resize=scale&reconnect=true")
+    """Redireciona / para o cliente noVNC embutido com autoconnect e scale=true"""
+    raise web.HTTPFound("/vnc_lite.html?autoconnect=true&scale=true&reconnect=true")
 
 
 def create_app() -> web.Application:
@@ -420,6 +448,7 @@ def create_app() -> web.Application:
 
     # Rotas da API e WebSocket VNC
     app.router.add_get("/api/health", handle_health)
+    app.router.add_get("/api/diag", handle_diag)
     app.router.add_get("/api/rooms", handle_list_rooms)
     app.router.add_post("/api/rooms", handle_create_room)
     app.router.add_get("/api/rooms/{room_id}", handle_get_room)
@@ -446,3 +475,4 @@ def create_app() -> web.Application:
 if __name__ == "__main__":
     print(f"[Brasfoot Cloud] Iniciando Gateway na porta {PORT}...")
     web.run_app(create_app(), host="0.0.0.0", port=PORT)
+

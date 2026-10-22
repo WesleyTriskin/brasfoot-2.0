@@ -402,7 +402,7 @@ export default function BrasfootCloudApp() {
     !currentRoom?.activeTurnPlayerId ||
     currentRoom.activeTurnPlayerId === playerId;
 
-  const vncStreamUrl = `${serverUrl}/vnc_lite.html?autoconnect=true&resize=scale&reconnect=true`;
+  const vncStreamUrl = `${serverUrl}/vnc_lite.html?autoconnect=true&scale=true&reconnect=true`;
 
   return (
     <div className="min-h-screen flex flex-col bg-[#07110d] text-emerald-50">
