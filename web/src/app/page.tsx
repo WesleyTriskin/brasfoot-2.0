@@ -46,7 +46,7 @@ const CLUBES_2026 = [
 ];
 
 const DEFAULT_SERVER_URL =
-  process.env.NEXT_PUBLIC_BRASFOOT_SERVER_URL || "https://brasfoot-cloud.onrender.com";
+  process.env.NEXT_PUBLIC_BRASFOOT_SERVER_URL || "https://brasfoot-2-0.onrender.com";
 
 export default function BrasfootCloudApp() {
   // Identidade do Treinador
@@ -993,3 +993,4 @@ export default function BrasfootCloudApp() {
     </div>
   );
 }
+
