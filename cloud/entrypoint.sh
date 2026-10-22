@@ -42,7 +42,7 @@ sleep 1
       -Dsun.java2d.xrender=false \
       -Dawt.useSystemAAFontSettings=on \
       -Dswing.aatext=true \
-      -Xms256m -Xmx768m \
+      -Xms128m -Xmx320m \
       -javaagent:/app/brasfoot-agent.jar \
       -jar /app/brasfoot.jar || true
     echo "[Brasfoot Loop] Processo encerrado. Reiniciando em 2 segundos..."
@@ -52,3 +52,4 @@ sleep 1
 
 # 5. Iniciar Gateway Web (noVNC + WebSocket /websockify + API Multiplayer) na porta $PORT
 exec python3 /app/cloud/server.py
+
