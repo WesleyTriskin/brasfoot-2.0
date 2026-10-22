@@ -21,3 +21,10 @@ sources.txt
 Thumbs.db
 Desktop.ini
 .DS_Store
+
+# Variáveis de Ambiente e Segredos (centralizados localmente / GitHub Secrets)
+.env
+.env.local
+web/.env.local
+web/node_modules/
+web/.next/

@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: brasfoot-cloud
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: PORT
+        value: 8080
+      - key: DISPLAY
+        value: ":99"
+      - key: SCREEN_RESOLUTION
+        value: 1280x800x24

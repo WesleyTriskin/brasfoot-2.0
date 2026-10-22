@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+:root {
+  --bg-stadium: #07110d;
+  --bg-panel: #0d1f18;
+  --accent-pitch: #10b981;
+}
+
+body {
+  background-color: var(--bg-stadium);
+  color: #ecfdf5;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
