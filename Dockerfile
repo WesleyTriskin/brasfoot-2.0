@@ -50,8 +50,10 @@ RUN mkdir -p /tmp/build_classes && \
     jar uf /app/brasfoot-agent.jar -C /tmp/build_classes br && \
     rm -rf /tmp/build_classes /tmp/sources.txt
 
-# Personalizar vnc_lite.html do noVNC para ocupar 100% da tela, sem barra superior e com fundo verde escuro do Brasfoot
-RUN if [ -f /usr/share/novnc/vnc_lite.html ]; then \
+# Personalizar vnc_lite.html do noVNC e desativar popup fbsetbg/xmessage do Fluxbox
+RUN ln -sf /bin/true /usr/bin/fbsetbg && \
+    ln -sf /bin/true /usr/bin/xmessage && \
+    if [ -f /usr/share/novnc/vnc_lite.html ]; then \
       sed -i 's/<title>.*<\/title>/<title>Brasfoot 2026 Cloud<\/title>/' /usr/share/novnc/vnc_lite.html && \
       sed -i 's/#top_bar {/\#top_bar { display: none !important;/' /usr/share/novnc/vnc_lite.html && \
       sed -i 's/background-color: dimgrey/background-color: #07110d/g' /usr/share/novnc/vnc_lite.html; \

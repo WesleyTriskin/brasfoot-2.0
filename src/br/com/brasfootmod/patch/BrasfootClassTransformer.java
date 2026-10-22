@@ -14,6 +14,8 @@ public class BrasfootClassTransformer implements ClassFileTransformer {
         try {
             if ("best/S".equals(className)) {
                 return transformBestS(classfileBuffer);
+            } else if ("c/a".equals(className)) {
+                return transformCA(classfileBuffer);
             } else if ("a/ho".equals(className)) {
                 return transformAHo(classfileBuffer);
             } else if ("a/cS".equals(className)) {
@@ -164,6 +166,38 @@ public class BrasfootClassTransformer implements ClassFileTransformer {
 
         cr.accept(cv, 0);
         System.out.println("[MOD PATCH] ✅ b.ar transformado com sucesso (filtro anti-prefixo de mod na Caixa de Entrada ativo)");
+        return cw.toByteArray();
+    }
+
+    /**
+     * Garante que c.a.vL() retorne sempre true (Jogo 100% Registrado no container Linux: libera Estaduais, Libertadores, Copa do Mundo 2026, etc.)
+     */
+    private byte[] transformCA(byte[] original) {
+        ClassReader cr = new ClassReader(original);
+        ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_MAXS);
+
+        ClassVisitor cv = new ClassVisitor(Opcodes.ASM5, cw) {
+            @Override
+            public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
+                if ("vL".equals(name) && "()Z".equals(desc)) {
+                    MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
+                    return new MethodVisitor(Opcodes.ASM5, null) {
+                        @Override
+                        public void visitCode() {
+                            mv.visitCode();
+                            mv.visitInsn(Opcodes.ICONST_1);
+                            mv.visitInsn(Opcodes.IRETURN);
+                            mv.visitMaxs(1, 0);
+                            mv.visitEnd();
+                        }
+                    };
+                }
+                return super.visitMethod(access, name, desc, signature, exceptions);
+            }
+        };
+
+        cr.accept(cv, 0);
+        System.out.println("[MOD PATCH] ✅ c.a.vL() transformado com sucesso (Registro Completo ativado)");
         return cw.toByteArray();
     }
 }
