@@ -12,13 +12,14 @@ echo "============================================================"
 
 rm -f /tmp/.X99-lock /tmp/.X11-unix/X99 /tmp/vnc.sock
 
-# 1. Iniciar Xtigervnc calibrado para baixa CPU (-FrameRate 15, -CompressLevel 1)
+# 1. Iniciar Xtigervnc calibrado para baixa CPU (-FrameRate 15, -ZlibLevel 1, -ImprovedHextile 0)
 Xtigervnc "$DISPLAY" \
   -geometry 1024x720 \
-  -depth 16 \
+  -depth 24 \
   -FrameRate 15 \
-  -CompressLevel 1 \
-  -QualityLevel 5 \
+  -ZlibLevel 1 \
+  -ImprovedHextile 0 \
+  -CompareFB 1 \
   -rfbunixpath /tmp/vnc.sock \
   -rfbport -1 \
   -SecurityTypes None \

@@ -56,7 +56,9 @@ RUN ln -sf /bin/true /usr/bin/fbsetbg && \
     if [ -f /usr/share/novnc/vnc_lite.html ]; then \
       sed -i 's/<title>.*<\/title>/<title>Brasfoot 2026 Cloud<\/title>/' /usr/share/novnc/vnc_lite.html && \
       sed -i 's/#top_bar {/\#top_bar { display: none !important;/' /usr/share/novnc/vnc_lite.html && \
-      sed -i 's/background-color: dimgrey/background-color: #07110d/g' /usr/share/novnc/vnc_lite.html; \
+      sed -i 's/background-color: dimgrey/background-color: #07110d/g' /usr/share/novnc/vnc_lite.html && \
+      sed -i "s/readQueryVariable('scale', false)/true/g" /usr/share/novnc/vnc_lite.html && \
+      sed -i "s/readQueryVariable('resize', false)/false/g" /usr/share/novnc/vnc_lite.html; \
     fi \
     && chmod +x /app/cloud/entrypoint.sh /app/cloud/server.py
 
