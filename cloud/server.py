@@ -382,7 +382,7 @@ async def handle_diag(request: web.Request):
     return web.json_response({
         "windows": win_list,
         "brasfootLog": read_tail("/tmp/brasfoot.log"),
-        "vncLog": read_tail("/tmp/x11vnc.log"),
+        "vncLog": read_tail("/tmp/vnc.log"),
     })
 
 

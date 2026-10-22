@@ -1499,6 +1499,15 @@ public class BrasfootAgent {
                 String frameClass = frame.getClass().getName();
                 boolean isEditorClubes = frameClass.equals("d.n");
 
+                if (frameClass.equals("a.gq")) {
+                    // Na tela inicial (532x300 undecorated), aumenta 32px para não cortar 'Registrar Jogo' / 'Sair'
+                    if (frame.getRootPane().getClientProperty("SplashHeightAdjusted") == null) {
+                        frame.getRootPane().putClientProperty("SplashHeightAdjusted", Boolean.TRUE);
+                        frame.setSize(frame.getWidth(), frame.getHeight() + 32);
+                        hookSplashLabelsForCloudClick(frame);
+                    }
+                }
+
                 if (isEditorClubes) {
                     // Ajusta altura do frame do editor para não cortar botões inferiores
                     if (frame.getRootPane().getClientProperty("EditorHeightAdjusted") == null) {
@@ -1646,6 +1655,36 @@ public class BrasfootAgent {
                 System.err.println("[MOD] Erro ao injetar no frame: " + e.getMessage());
             }
         });
+    }
+
+    private static void hookSplashLabelsForCloudClick(Container root) {
+        if (root == null) return;
+        for (Component comp : root.getComponents()) {
+            if (comp instanceof JLabel) {
+                final JLabel lbl = (JLabel) comp;
+                if (lbl.getClientProperty("CloudClickHooked") == null) {
+                    MouseListener[] listeners = lbl.getMouseListeners();
+                    if (listeners != null && listeners.length > 0) {
+                        lbl.putClientProperty("CloudClickHooked", Boolean.TRUE);
+                        lbl.addMouseListener(new MouseAdapter() {
+                            @Override
+                            public void mousePressed(MouseEvent e) {
+                                if (SwingUtilities.isLeftMouseButton(e)) {
+                                    for (MouseListener ml : listeners) {
+                                        if (ml != this && ml.getClass().getName().startsWith("a.g")) {
+                                            SwingUtilities.invokeLater(() -> ml.mouseClicked(e));
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+            if (comp instanceof Container) {
+                hookSplashLabelsForCloudClick((Container) comp);
+            }
+        }
     }
 
     public static void abrirDialogoFerias() {
