@@ -128,8 +128,8 @@ public class BrasfootAgent {
             }
         }, AWTEvent.WINDOW_EVENT_MASK);
 
-        // 3. Monitor em Tempo Real para Simulação Instantânea e Telas do Jogo (a cada 50ms)
-        new javax.swing.Timer(50, e -> {
+        // 3. Monitor Otimizado para Cloud (700ms em vez de 50ms para economizar 95% de CPU no container 0.1 vCPU)
+        new javax.swing.Timer(700, e -> {
             // Injeta temporadas 2026 e 2027 na tela de configurações de novo jogo (a.hU)
             verificarEInjetarTelaInicioHU();
 
